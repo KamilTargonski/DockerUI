@@ -1,0 +1,9 @@
+FROM node:18.14
+
+COPY . /app
+
+WORKDIR /app
+
+RUN npm install
+
+CMD node app.js

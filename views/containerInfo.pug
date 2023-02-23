@@ -1,0 +1,62 @@
+html
+    head
+        title= title
+    body
+
+        div(style='margin: 50px 100px')
+            form(action='http://127.0.0.1:8080')
+                input(type='submit' value='Return')
+            h1= title
+            div(style='margin: 0 0 50px 0; padding: 20px')
+                div(style='margin-bottom: 10px')= 'Id: ' + info.id
+                div(style='margin-bottom: 10px')= 'Names: ' + info.names
+                div(style='margin-bottom: 10px')= 'Image: ' + info.images
+                div(style='margin-bottom: 10px')= 'ImageID: ' + info.imageId
+                div(style='margin-bottom: 10px')= 'Command: ' + info.command
+                div(style='margin-bottom: 10px')= 'Created: ' + info.created
+                div(style='margin-bottom: 10px')= 'Ports: '
+                    if !info.ports[0]
+                        p
+                    else
+                        ul(style='list-style: none')
+                            each port, key in info.ports[0]
+                                li= key + ': ' + port
+                div(style='margin-bottom: 10px')= 'Labels: '
+                    if !info.labels
+                        p
+                    else
+                        ul(style='list-style: none')
+                            each label, key in info.labels
+                                li= key + ': ' + label
+                div(style='margin-bottom: 10px')= 'State: ' + info.state
+                div(style='margin-bottom: 10px')= 'Status: ' + info.status
+                div(style='margin-bottom: 10px')= 'HostConfig: '
+                    if !info.hostConfig
+                        p
+                    else
+                        ul(style='list-style: none')
+                            each val, key in info.hostConfig
+                                li= key + ': ' + val
+                div(style='margin-bottom: 10px')= 'NetworkSettings: '
+                    if !info.networkSettings
+                        p
+                    else
+                        ul(style='list-style: none')
+                            each networks, key in info.networkSettings
+                                li(style='margin-bottom: 10px')= key + ': '
+                                    ul(style='list-style: none')
+                                        each network, key in networks
+                                            li(style='margin: 10px 0 10px 0')= key + ': '
+                                                ul(style='list-style: none')
+                                                    each val, key in network
+                                                        li= key + ': ' + val
+                div(style='margin-bottom: 10px')= 'Mounts: '
+                    if !info.mounts
+                        p
+                    else
+                        ul(style='list-style: none')
+                            each mount in info.mounts
+                                li(style='margin-bottom: 10px')
+                                    ul(style='list-style: none')
+                                        each val, key in mount
+                                            li= key + ': ' + val

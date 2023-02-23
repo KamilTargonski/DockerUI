@@ -1,0 +1,95 @@
+html
+    head
+        title= 'Docker UI'
+        script(src="https://kit.fontawesome.com/e0b8c5c8d4.js" crossorigin="anonymous")
+    body
+        div(style='margin: 30px 100px 30px 100px')
+            h1= 'Containers list:'
+            div(style='border: 5px solid blue; height: 80vh; padding: 0; display: flex; flex-direction: column; justify-content: space-between; min-width: 800px')
+                div
+                    div(style='border-bottom: 3px solid blue; font-weight: bold; display: flex')
+                        div(style='display: inline-block; box-sizing:border-box; justify-content: center; border-right: 3px solid blue; padding: 5px 0; text-align: center; width: 15%')= 'Name'
+                        div(style='display: inline-block; box-sizing:border-box; justify-content: center; border-right: 3px solid blue; padding: 5px 0; text-align: center; width: 15.5%')= 'Image'
+                        div(style='display: inline-block; box-sizing:border-box; justify-content: center; border-right: 3px solid blue; padding: 5px 0; text-align: center; width: 20%')= 'Command'
+                        div(style='display: inline-block; box-sizing:border-box; justify-content: center; border-right: 3px solid blue; padding: 5px 0; text-align: center; width: 15%')= 'Status'
+                        div(style='display: inline-block; box-sizing:border-box; justify-content: center; border-right: 3px solid blue; padding: 5px 0; text-align: center; width: 20%')= 'Ports'
+                        div(style='display: inline-block; box-sizing:border-box; justify-content: center; border-right: 3px solid blue; padding: 5px 0; text-align: center; width: 20%')= 'Up for'
+                        div(style='display: inline-block; box-sizing:border-box; justify-content: center; border-right: 3px solid blue; padding: 5px 0; text-align: center; width: 15%')= 'Age'
+                        div(style='display: inline-block; box-sizing:border-box; justify-content: center; padding: 5px 0; text-align: center; width: 17%')= 'Actions'
+                    div(style= 'overflow: auto; height: 43vh')
+                        each containerObj in containersList
+                            div(style='margin: 0; padding: 0; display: flex; flex-direction: row; border-bottom: 1px solid blue')
+                                div(style='box-sizing:border-box; justify-content: center; border-right:1px solid blue; padding: 5px 10px; text-align: center; width: 15%')
+                                    a(href= `http://127.0.0.1:8080/containers/${containerObj.name}`)= containerObj.name
+                                div(style='box-sizing:border-box; justify-content: center; border-right:1px solid blue; padding: 5px 10px; text-align: center; width: 15%')= containerObj.image
+                                div(style='box-sizing:border-box; justify-content: center; border-right:1px solid blue; padding: 5px 10px; text-align: center; width: 20%')= containerObj.command
+                                div(style='box-sizing:border-box; justify-content: center; border-right:1px solid blue; padding: 5px 10px; text-align: center; text-transform: capitalize; width: 15%')= containerObj.status
+                                div(style='box-sizing:border-box; justify-content: center; border-right:1px solid blue; padding: 5px 10px; text-align: center; width: 20%')= containerObj.ports
+                                div(style='box-sizing:border-box; justify-content: center; border-right:1px solid blue; padding: 5px 10px; text-align: center; width: 20%')= containerObj.upFor
+                                div(style='box-sizing:border-box; justify-content: center; border-right:1px solid blue; padding: 5px 10px; text-align: center; width: 15%')= containerObj.age
+                                div(style='box-sizing:border-box; justify-content: center; border-right:1px solid blue; padding: 5px 10px; text-align: center; width: 15%')
+                                    a(href= `http://127.0.0.1:8080/containers/${containerObj.name}/delete` style='text-decoration: none; color: grey; margin-right: 5px')
+                                        i.fa-sharp.fa-solid.fa-trash
+                                    a(href= `http://127.0.0.1:8080/containers/${containerObj.name}/restart` style='text-decoration: none; color: grey')
+                                        i.fa-sharp.fa-solid.fa-rotate-right
+                div(style= 'display: flex; justify-content: space-between; border-top: blue 3px solid')
+                    div(style= 'border-right: blue 3px solid; width: 25%')
+                        p(style= 'font-weight: bold; margin: 10px')= 'Create container'
+                        form(method='POST' action='/' role='form' id='create' style='display: flex; flex-direction: column')
+                            div(style='margin: 10px')
+                                label(for= 'name' style='margin: 10px 10px 5px 0;')= 'Name:'
+                                input(type='text' id='name' name='name' style='width: 70%')
+                            div(style='margin: 10px')
+                                label(for= 'image' style='margin: 5px 10px 5px 0')= 'Image:'
+                                input(type='text' id='image' name='image' style='width: 70%')
+                            div(style= 'margin: 10px; padding: 0')
+                                p(style='font-weight: bold; padding: 0; margin: 0')= 'Default CMD: /bin/sh -c \'tail -f /dev/null\''
+                            div(style='margin: 0 auto; display: flax; justify-content: center')
+                                input(type='submit' value='Run')
+                    div(style= 'border-right: blue 3px solid; width: 25%')
+                        div(style= 'display: flex; justify-content: flex-start; margin: 10px')
+                            p(style= 'font-weight: bold; margin: 0 15px 0 0')= 'Status:'
+                            p(id= 'idle' style= 'display: inline-block; margin: 0 auto')= 'idle...'
+                        form(id='refresh' action='http://127.0.0.1:8080' style='display: none; justify-content: center')
+                            input(type='submit' value='Refresh')
+                    div(style= 'display: flex; width: 50%; flex-direction: column; margin: 10px')
+                        p(style= 'font-weight: bold; margin: 0 0 10px 0')= 'Logs'
+                        div(id= 'logsList' style= 'overflow: auto; height: 170px; width: 100%')
+                            ul(style= 'list-style: none; margin: 0; display: flex; flex-direction: column-reverse; padding: 0')
+                                each logElement in logsList
+                                    li(style= 'margin: 0')= logElement
+        script.
+            const idleP = document.getElementById('idle');
+            const refresh = document.getElementById('refresh');
+            let isToggle = 0;
+
+            async function addLoading(url= 'http://127.0.0.1:8080/isloading') {
+                return await fetch(url).then(res => res.text()).then(isLoading => {
+                    const processesNumber = Number(isLoading);
+                    if (processesNumber > 0) {
+                        idleP.innerText = `loading... (${isLoading})`;
+                        ++isToggle;
+                    } else {
+                        idleP.innerText = 'idle...';
+                        if (isToggle) {
+                            refresh.style.display = 'flex';
+                        }
+                    }
+                }).catch(err => console.log(err));
+            }
+
+            setInterval(addLoading, 250);
+
+            // async function addLog (url= 'http://127.0.0.1:8080/logging') {
+            //     return await fetch(url).then(res => res.text()).then(i => console.log(i))
+            // }
+            //
+            // setInterval(addLog, 1000);
+
+            const createForm = document.getElementById('create');
+
+            const clearInputValue = () => {
+                createForm.reset();
+            }
+
+            createForm.addEventListener('formdata', clearInputValue);
