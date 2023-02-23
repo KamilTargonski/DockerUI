@@ -43,7 +43,8 @@ html
                                 label(for= 'image' style='margin: 5px 10px 5px 0')= 'Image:'
                                 input(type='text' id='image' name='image' style='width: 70%')
                             div(style= 'margin: 10px; padding: 0')
-                                p(style='font-weight: bold; padding: 0; margin: 0')= 'Default CMD: /bin/sh -c \'tail -f /dev/null\''
+                                label(style='font-weight: bold; margin: 5px 10px 5px 0')= 'CMD: /bin/sh -c \'tail -f /dev/null\''
+                                //input(type='text' id='cmd' name='cmd' style='width: 70%' value='')
                             div(style='margin: 0 auto; display: flax; justify-content: center')
                                 input(type='submit' value='Run')
                     div(style= 'border-right: blue 3px solid; width: 25%')
@@ -79,12 +80,6 @@ html
             }
 
             setInterval(addLoading, 250);
-
-            // async function addLog (url= 'http://127.0.0.1:8080/logging') {
-            //     return await fetch(url).then(res => res.text()).then(i => console.log(i))
-            // }
-            //
-            // setInterval(addLog, 1000);
 
             const createForm = document.getElementById('create');
 

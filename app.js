@@ -15,11 +15,6 @@ function addDataToLog (message) {
   console.log(finalMessage);
 }
 
-//1. (message) => np. Creating container named ${req.body.name}...
-//2. wczesniej setnac date
-//3. push messa do arr
-//4. i sama sie zconsologowac
-
 app.use(express.static(__dirname + '/public'));
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -90,6 +85,8 @@ app.post('/', async function (req, res) {
   ++inProgress;
   const startDateObj = new Date();
   addDataToLog(`Creating container named ${req.body.name}...`);
+  console.log([req.body.cmd])
+  //'/bin/sh', '-c', 'tail -f /dev/null'
   await docker.createContainer({Image: `${req.body.image}`, Cmd: ['/bin/sh', '-c', 'tail -f /dev/null'], name: `${req.body.name}`})
       .then(function (container) {
         container.start();
@@ -102,7 +99,7 @@ app.post('/', async function (req, res) {
 
   do {
     docker.listContainers((err, containers) => {
-      isCreated = containers.filter(containerInfo => containerInfo.Names[0].replace('/', '') === req.body.name);
+      isCreated = containers.find(containerInfo => containerInfo.Names[0].replace('/', '') === req.body.name);
     });
 
     await new Promise(r => setTimeout(r, 1000));
@@ -154,25 +151,23 @@ app.get('/containers/:containerName/delete', async (req, res) => {
   addDataToLog(`Deleting container ${containerName}...`);
 
   docker.listContainers((err, containers) => {
-    const deletingContainer = containers.filter(containerInfo => containerInfo.Names[0].replace('/', '') === containerName);
+    const deletingContainer = containers.find(containerInfo => containerInfo.Names[0].replace('/', '') === containerName);
 
-    if (deletingContainer.length === 0) {
+    if (!deletingContainer) {
       const errorMessage = `Delete error! Container with name ${containerName} does not exist!`;
       addDataToLog(errorMessage)
       res.send(errorMessage);
     }
 
-    deletingContainer.forEach((containerInfo) => {
-      const containerToDelete = docker.getContainer(containerInfo.Id);
-      containerToDelete.remove({v: true, force: true});
-    });
+    const containerToDelete = docker.getContainer(deletingContainer.Id);
+    containerToDelete.remove({v: true, force: true});
   });
 
   let stillExists;
 
   do {
     docker.listContainers( (err, containers) => {
-      stillExists = containers.filter(containerInfo => containerInfo.Names[0].replace('/', '') === containerName).length > 0;
+      stillExists = containers.find(containerInfo => containerInfo.Names[0].replace('/', '') === containerName);
     });
 
     await new Promise(r => setTimeout(r, 500));
@@ -191,28 +186,26 @@ app.get('/containers/:containerName/restart', async (req, res) => {
   addDataToLog(`Restarting container named ${containerName}...`);
 
   docker.listContainers( (err, containers) => {
-    const restartingContainer = containers.filter(containerInfo => containerInfo.Names[0].replace('/', '') === containerName);
+    const restartingContainer = containers.find(containerInfo => containerInfo.Names[0].replace('/', '') === containerName);
 
-    if (restartingContainer.length === 0) {
+    if (!restartingContainer) {
       const errorMessage = `Restart error! Container with name ${containerName} does not exist!`;
       addDataToLog(errorMessage);
       res.send(errorMessage);
     }
 
-    restartingContainer.forEach((containerInfo) => {
-      const containerToRestart = docker.getContainer(containerInfo.Id);
-      containerToRestart.restart();
-    });
+    const containerToRestart = docker.getContainer(restartingContainer.Id);
+    containerToRestart.restart();
   });
 
   let currentStatus;
 
   do {
     docker.listContainers((err, containers) => {
-      const currentRestartsContainer = containers.filter(containerInfo => containerInfo.Names[0].replace('/', '') === containerName);
+      const currentRestartsContainer = containers.find(containerInfo => containerInfo.Names[0].replace('/', '') === containerName);
 
-      if (currentRestartsContainer.length > 0) {
-        currentStatus = currentRestartsContainer[0].Status;
+      if (currentRestartsContainer) {
+        currentStatus = currentRestartsContainer.Status;
       }
     });
 
