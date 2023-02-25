@@ -9,7 +9,19 @@ const logsList = [];
 
 function addDataToLog (message) {
   const dateObj = new Date();
-  const date = new Intl.DateTimeFormat('pl-PL', {timeZone: 'Europe/Warsaw', hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(dateObj).replace(',', '').replace('.', '/').replace('.', '/');
+  const date = new Intl.DateTimeFormat('pl-PL', {
+    timeZone: 'Europe/Warsaw',
+    hour12: false,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  })
+      .format(dateObj)
+      .replace(',', '')
+      .replaceAll('.', '/');
   const finalMessage = `[${date}] ${message}`
   logsList.push(finalMessage);
   console.log(finalMessage);
@@ -77,52 +89,63 @@ app.get('/', (req, res) => {
       containersList.push(containerObj);
     });
 
-    res.render('index.pug', { containersList: containersList, logsList: logsList, inProgress: inProgress });
+    res.render('bootstrap.pug', { containersList: containersList, logsList: logsList, inProgress: inProgress });
   });
 });
 
 app.post('/', async function (req, res) {
+  if (!req.body.image) {
+    req.body.image = 'undefined';
+  }
+
   ++inProgress;
   const startDateObj = new Date();
   addDataToLog(`Creating container named ${req.body.name}...`);
-  console.log([req.body.cmd])
-  //'/bin/sh', '-c', 'tail -f /dev/null'
+  let errorCaught = false;
   await docker.createContainer({Image: `${req.body.image}`, Cmd: ['/bin/sh', '-c', 'tail -f /dev/null'], name: `${req.body.name}`})
       .then(function (container) {
         container.start();
       })
-      .catch(err => {
+      .catch(async err => {
+        await new Promise(r => setTimeout(r, 500));
         addDataToLog(err);
+        --inProgress;
+        const endDateObj = new Date();
+        const time = endDateObj.getTime() - startDateObj.getTime();
+        addDataToLog(`Container ${req.body.name} was not created [time: ${time}ms]`);
+        errorCaught = true
       });
 
-  let isCreated;
+  if (!errorCaught) {
+    let isCreated;
 
-  do {
-    docker.listContainers((err, containers) => {
-      isCreated = containers.find(containerInfo => containerInfo.Names[0].replace('/', '') === req.body.name);
-    });
+    do {
+      docker.listContainers((err, containers) => {
+        isCreated = containers.find(containerInfo => containerInfo.Names[0].replace('/', '') === req.body.name);
+      });
 
-    await new Promise(r => setTimeout(r, 1000));
+      await new Promise(r => setTimeout(r, 1000));
 
-  } while (!isCreated);
-  --inProgress;
-  const endDateObj = new Date();
-  const time = endDateObj.getTime() - startDateObj.getTime();
-  addDataToLog(`Container ${req.body.name} was created [time: ${time}ms]`);
+    } while (!isCreated);
+    --inProgress;
+    const endDateObj = new Date();
+    const time = endDateObj.getTime() - startDateObj.getTime();
+    addDataToLog(`Container ${req.body.name} was created [time: ${time}ms]`);
+  }
 });
 
 app.get('/containers/:containerName', (req, res) => {
   const containerName = req.params.containerName;
 
   docker.listContainers((err, containers) => {
-    const filteredContainers = containers.filter(containerInfo => containerInfo.Names[0].replace('/', '') === containerName);
-    if (filteredContainers.length === 0) {
+    const filteredContainers = containers.find(containerInfo => containerInfo.Names[0].replace('/', '') === containerName);
+    if (!filteredContainers) {
       const errMessage = `Error! Container with name ${containerName} does not exist!`;
       addDataToLog(errMessage);
       res.send(errMessage);
     }
 
-    filteredContainers.forEach((containerInfo) => {
+    containers.forEach((containerInfo) => {
       const detailedContainer = {
         id: containerInfo.Id,
         names: containerInfo.Names,
@@ -224,7 +247,7 @@ app.get('/isloading', (req, res) => {
 
 app.get('/logging', (req, res) => {
   res.send(logsList);
-})
+});
 
 app.route('*').all((req, res) => {
   const errorMessage = `Error 404: path ${req.path} not found`;

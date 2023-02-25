@@ -1,62 +1,91 @@
 html
     head
         title= title
+        meta(charset="utf-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css")
+        script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js")
+        script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js")
+        script(src="https://kit.fontawesome.com/e0b8c5c8d4.js" crossorigin="anonymous")
+        style
+            include ../public/stylesheets/info.scss
     body
-
-        div(style='margin: 50px 100px')
-            form(action='http://127.0.0.1:8080')
-                input(type='submit' value='Return')
+        div(class='container')
             h1= title
-            div(style='margin: 0 0 50px 0; padding: 20px')
-                div(style='margin-bottom: 10px')= 'Id: ' + info.id
-                div(style='margin-bottom: 10px')= 'Names: ' + info.names
-                div(style='margin-bottom: 10px')= 'Image: ' + info.images
-                div(style='margin-bottom: 10px')= 'ImageID: ' + info.imageId
-                div(style='margin-bottom: 10px')= 'Command: ' + info.command
-                div(style='margin-bottom: 10px')= 'Created: ' + info.created
-                div(style='margin-bottom: 10px')= 'Ports: '
-                    if !info.ports[0]
-                        p
-                    else
-                        ul(style='list-style: none')
-                            each port, key in info.ports[0]
-                                li= key + ': ' + port
-                div(style='margin-bottom: 10px')= 'Labels: '
-                    if !info.labels
-                        p
-                    else
-                        ul(style='list-style: none')
-                            each label, key in info.labels
-                                li= key + ': ' + label
-                div(style='margin-bottom: 10px')= 'State: ' + info.state
-                div(style='margin-bottom: 10px')= 'Status: ' + info.status
-                div(style='margin-bottom: 10px')= 'HostConfig: '
-                    if !info.hostConfig
-                        p
-                    else
-                        ul(style='list-style: none')
-                            each val, key in info.hostConfig
-                                li= key + ': ' + val
-                div(style='margin-bottom: 10px')= 'NetworkSettings: '
-                    if !info.networkSettings
-                        p
-                    else
-                        ul(style='list-style: none')
-                            each networks, key in info.networkSettings
-                                li(style='margin-bottom: 10px')= key + ': '
-                                    ul(style='list-style: none')
-                                        each network, key in networks
-                                            li(style='margin: 10px 0 10px 0')= key + ': '
-                                                ul(style='list-style: none')
-                                                    each val, key in network
-                                                        li= key + ': ' + val
-                div(style='margin-bottom: 10px')= 'Mounts: '
-                    if !info.mounts
-                        p
-                    else
-                        ul(style='list-style: none')
-                            each mount in info.mounts
-                                li(style='margin-bottom: 10px')
-                                    ul(style='list-style: none')
-                                        each val, key in mount
-                                            li= key + ': ' + val
+            form(action='http://127.0.0.1:8080')
+                input(type='submit' value='Return' class='btn btn-primary')
+            div(class='row info-box')
+                div(class='col-lg-12')
+                    div(class='row')
+                        p(class='element-title')= 'Id: '
+                            p= info.id
+                    div(class='row')
+                        p(class='element-title')= 'Names: '
+                            p= info.names
+                    div(class='row')
+                        p(class='element-title')= 'Image: '
+                            p= info.images
+                    div(class='row')
+                        p(class='element-title')= 'ImageID: '
+                            p= info.imageId
+                    div(class='row')
+                        p(class='element-title')= 'Command: '
+                            p= info.command
+                    div(class='row')
+                        p(class='element-title')= 'Created: '
+                            p= info.created
+                    div(class='row')
+                        p(class='element-title')= 'Ports: '
+                            if !info.ports[0]
+                                p
+                            else
+                                ul(style='list-style: none')
+                                    each port, key in info.ports[0]
+                                        li= key + ': ' + port
+                    div(class='row')
+                        p(class='element-title')= 'Labels: '
+                            if !info.labels
+                                p
+                            else
+                                ul(style='list-style: none')
+                                    each label, key in info.labels
+                                        li= key + ': ' + label
+                    div(class='row')
+                        p(class='element-title')= 'State: '
+                            p= info.state
+                    div(class='row')
+                        p(class='element-title')= 'Status: '
+                            p= info.status
+                    div(class='row')
+                        p(class='element-title')= 'HostConfig: '
+                            if !info.hostConfig
+                                p
+                            else
+                                ul(style='list-style: none')
+                                    each val, key in info.hostConfig
+                                        li= key + ': ' + val
+                    div(class='row')
+                        p(class='element-title')= 'NetworkSettings: '
+                            if !info.networkSettings
+                                p
+                            else
+                                ul
+                                    each networks, key in info.networkSettings
+                                        li= key + ': '
+                                            ul
+                                                each network, key in networks
+                                                    li= key + ': '
+                                                        ul
+                                                            each val, key in network
+                                                                li= key + ': ' + val
+                    div(class='row')
+                        p(class='element-title')= 'Mounts: '
+                            if !info.mounts
+                                p
+                            else
+                                ul
+                                    each mount in info.mounts
+                                        li(class='mounts')
+                                            ul
+                                                each val, key in mount
+                                                    li= key + ': ' + val
