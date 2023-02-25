@@ -9,7 +9,7 @@
 .idle-row {
     text-align: center;
     display: inline-block;
-    margin: 0 auto
+    margin: 0 auto;
 }
 
 .status-p {
@@ -52,10 +52,13 @@ label {
     display: none;
 }
 
+.row-list {
+    overflow: auto;
+    max-height: 230px;
+}
+
 .logs-list {
     list-style: none;
-    max-height: 230px;
-    overflow: auto;
     padding-left: 0;
     display: flex;
     flex-direction: column-reverse;

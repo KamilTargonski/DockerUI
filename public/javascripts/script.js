@@ -1,4 +1,4 @@
-const idleP = document.getElementById('idle');
+const idleAndLoadingP = document.getElementById('idleAndLoading');
 const refresh = document.getElementById('refresh');
 let isToggle = 0;
 
@@ -6,11 +6,11 @@ async function addLoading(url= 'http://127.0.0.1:8080/isloading') {
     return await fetch(url).then(res => res.text()).then(isLoading => {
         const processesNumber = Number(isLoading);
         if (processesNumber > 0) {
-            idleP.innerText = `loading... (${isLoading})`;
+            idleAndLoadingP.innerText = `loading... (${isLoading})`;
             refresh.classList.add('invisible');
             ++isToggle;
         } else {
-            idleP.innerText = 'idle...';
+            idleAndLoadingP.innerText = 'idle...';
             if (isToggle) {
                 refresh.classList.remove('invisible');
             }

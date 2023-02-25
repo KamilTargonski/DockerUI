@@ -64,13 +64,13 @@ html
                 div(class='col-md-3 col-ops')
                     div(class='row')
                         p(class='col-title status-p' style='') Status:
-                        p(id= 'idle' class='idle-row')
+                        p(id= 'idleAndLoading' class='idle-row')
                     div(class='row button-div')
                         a(type='submit' id='refresh' href='http://127.0.0.1:8080' class="btn btn-primary invisible") Refresh
                 div(class='col-md-6')
                     div(class='row')
                         p(class='col-title') Logs
-                    div(class='row')
+                    div(class='row row-list')
                         ul(class='logs-list')
                             each logElement in logsList
                                 li= logElement
