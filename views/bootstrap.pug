@@ -1,0 +1,78 @@
+doctype html
+html
+    head
+        title DockerUI
+        meta(charset="utf-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css")
+        script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js")
+        script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js")
+        script(src="https://kit.fontawesome.com/e0b8c5c8d4.js" crossorigin="anonymous")
+        style
+            include ../public/stylesheets/style.scss
+    body
+        div(class='main')
+            div(class='container')
+                div(class= 'row')
+                    div(class= 'col-12')
+                        h1 Containers List
+                div(class= 'row table-row')
+                    table(class='table')
+                        thead
+                            tr
+                                th(scope='col' class= 'log-td') Name
+                                th(scope='col' class= 'log-td') Image
+                                th(scope='col' class= 'log-td') Command
+                                th(scope='col' class= 'log-td') Status
+                                th(scope='col' class= 'log-td') Ports
+                                th(scope='col' class= 'log-td') Up for
+                                th(scope='col' class= 'log-td') Age
+                                th(scope='col' class= 'log-td') Actions
+                        tbody
+                            each containerObj in containersList
+                                tr
+                                    td
+                                        a(href= `http://127.0.0.1:8080/containers/${containerObj.name}`)= containerObj.name
+                                    td(class='log-td')= containerObj.image
+                                    td(class='log-td')= containerObj.command
+                                    td(class='log-td')= containerObj.status
+                                    td(class='log-td')= containerObj.ports
+                                    td(class='log-td')= containerObj.upFor
+                                    td(class='log-td')= containerObj.age
+                                    td(class='log-td')
+                                        a(href= `http://127.0.0.1:8080/containers/${containerObj.name}/delete` style='text-decoration: none; color: grey; margin-right: 5px')
+                                            i.fa-sharp.fa-solid.fa-trash
+                                        a(href= `http://127.0.0.1:8080/containers/${containerObj.name}/restart` style='text-decoration: none; color: grey')
+                                            i.fa-sharp.fa-solid.fa-rotate-right
+            div(class='container options-block')
+                div(class='col-md-3 col-ops')
+                    div(class='row')
+                        p(class='col-title') Create container
+                    div(class='row')
+                        form(method='POST' action='/' role='form' id='create')
+                            div(class='form-group')
+                                label(for='name') Name:
+                                input(type='text' id='name' name='name' class="form-control")
+                            div(class='form-group')
+                                label(for= 'image') Image:
+                                input(type='text' id='image' name='image' class="form-control")
+                            div(class='form-group')
+                                p(class='col-title') CMD: /bin/sh -c 'tail -f /dev/null'
+                                //input(type='text' id='cmd' name='cmd' value='' class="form-control")
+                            div(class='form-group btn-run')
+                                button(type='submit' class="btn btn-primary") Run
+                div(class='col-md-3 col-ops')
+                    div(class='row')
+                        p(class='col-title status-p' style='') Status:
+                        p(id= 'idleAndLoading' class='idle-row')
+                    div(class='row button-div')
+                        a(type='submit' id='refresh' href='http://127.0.0.1:8080' class="btn btn-primary invisible") Refresh
+                div(class='col-md-6')
+                    div(class='row')
+                        p(class='col-title') Logs
+                    div(class='row row-list')
+                        ul(class='logs-list')
+                            each logElement in logsList
+                                li= logElement
+        script
+            include ../public/javascripts/script.js
