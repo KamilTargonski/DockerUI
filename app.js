@@ -113,7 +113,7 @@ app.post('/', async function (req, res) {
         const endDateObj = new Date();
         const time = endDateObj.getTime() - startDateObj.getTime();
         addDataToLog(`Container ${req.body.name} was not created [time: ${time}ms]`);
-        errorCaught = true
+        errorCaught = true;
       });
 
   if (!errorCaught) {
