@@ -11,7 +11,7 @@ The application connects to the unix Docker socket using the Dockerode framework
 - [ExpressJS docs](https://expressjs.com/)
 - [PUG docs](https://pugjs.org/api/getting-started.html)
 - [Dockerfile docs](https://docs.docker.com/engine/reference/builder/)
-- [Bootstrap v.4 docs]
+- [Bootstrap 3.4.1 docs](https://getbootstrap.com/docs/3.4/)
 
 ## How to use
 1. Start Docker.
