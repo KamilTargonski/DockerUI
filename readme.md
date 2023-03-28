@@ -14,19 +14,19 @@ The application connects to the unix Docker socket using the Dockerode framework
 
 ## How to use
 1. Start Docker.
-2. Download *[this](https://github.com/KamilTargonski/DockerUI)* repository.
-3. Download app image from *[my docker.hub](https://hub.docker.com/r/kamiltargonski/dockerui/tags)*.
-4. Write this command in your console:
+2. Write this command in your console:
     ```
-    docker run -v /var/run/docker.sock:/var/run/docker.sock -v <repo path>/app.js:/app/app.js -v <repo path>/views:/app/views -v <repo path>/public:/app/public -d -p 8080:8080 --name dockerui kamiltargonski/dockerui:v1
+    docker run -v /var/run/docker.sock:/var/run/docker.sock -d -p 8080:8080 --name dockerui kamiltargonski/dockerui:v1
     ```
-5. Write in the search bar of your browser:
+3. Write in the search bar of your browser:
    ```
    http://localhost:8080/
    ```
-6. Enjoy the app!
+4. Enjoy the app!
 
 ## Usage tutorial
+### Information about container
+To see detailed information about the container, click on its *name*. You will be redirected to the subpage containing this information. To return to the home page, click the *Return* button.
 
 ### Create container
 1. In the *Name* field, enter a name for the new container. Remember that name must be unique.
@@ -67,6 +67,3 @@ This section shows all the information about the operations performed by the app
 - all errors caught by the app.
 
 Each log is provided with the time of its creation.
-
-### Information about container
-To see detailed information about the container, click on its *name*. You will be redirected to the subpage containing this information. To return to the home page, click the *Return* button.
